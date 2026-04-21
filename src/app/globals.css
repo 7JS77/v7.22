@@ -139,10 +139,10 @@
 
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2
-           bg-transparent text-gold font-semibold rounded-md
-           border border-gold/40 px-5 py-2.5 text-sm tracking-wide
-           transition-colors duration-150
-           hover:bg-gold/8 hover:border-gold/60 active:scale-[0.99]
+           bg-transparent text-gold font-semibold rounded-lg
+           border border-gold-dark px-5 py-2.5 text-sm tracking-wide
+           transition-all duration-150
+           hover:border-gold hover:text-gold-light active:scale-[0.98]
            disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
