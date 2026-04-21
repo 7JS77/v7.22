@@ -1,0 +1,302 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Aurexon v7.19 Design System — Global CSS
+   Restored for v7.21.
+
+   Key reversions from v7.20:
+   ✗ Removed: bg-grid / bg-noise / bg-hero-glow decorative utilities
+   ✗ Removed: gold glow box-shadows on buttons / cards
+   ✗ Removed: rounded-xl on buttons and cards (back to rounded-md/lg)
+   ✗ Removed: pulse-gold / slide-up animation classes
+   ✗ Removed: backdrop-blur on non-nav elements
+   ✓ Restored: solid bordered form inputs (bg-ink-3, inset shadow)
+   ✓ Restored: subtle card depth shadow (no glow ring)
+   ✓ Restored: btn-primary without shadow glow
+   ✓ Restored: section-eyebrow (.section-title → .section-eyebrow)
+   ✓ Added:    hero-overlay utility for bg-image sections (v7.21 only)
+───────────────────────────────────────────────────────────────────────────── */
+
+@layer base {
+  :root {
+    /* CSS custom properties matching v7.19 token values */
+    --color-ink:           10 13 20;       /* #0A0D14 */
+    --color-ink-2:         18 22 31;       /* #12161F */
+    --color-ink-3:         24 29 40;       /* #181D28 */
+    --color-gold:          201 168 76;     /* #C9A84C */
+    --color-gold-dark:     168 133 58;     /* #A8853A */
+    --color-border:        31 37 53;       /* #1F2535 */
+    --color-border-subtle: 25 30 43;       /* #191E2B */
+    --color-text-primary:  232 234 240;    /* #E8EAF0 */
+    --color-text-secondary:123 139 164;    /* #7B8BA4 */
+    --color-text-muted:    61 75 97;       /* #3D4B61 */
+    --color-success:       22 163 74;      /* #16A34A */
+    --color-error:         220 38 38;      /* #DC2626 */
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+    /* Prevent layout shift from scrollbar */
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    @apply bg-ink text-text-primary min-h-screen;
+    font-feature-settings: 'tnum' 1, 'ss01' 1;
+  }
+
+  /* ── Scrollbar — v7.19 minimal ────────────────────────────────────── */
+  ::-webkit-scrollbar       { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #0A0D14; }
+  ::-webkit-scrollbar-thumb { background: #1F2535; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #C9A84C; }
+
+  /* ── Text selection ───────────────────────────────────────────────── */
+  ::selection {
+    background: rgba(201, 168, 76, 0.18);
+    color: #C9A84C;
+  }
+
+  /* ── Focus ring — v7.19 subtle gold outline ───────────────────────── */
+  :focus-visible {
+    outline: 2px solid rgba(201, 168, 76, 0.45);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* ── Headings ─────────────────────────────────────────────────────── */
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-text-primary font-bold leading-tight;
+  }
+}
+
+@layer components {
+
+  /* ──────────────────────────────────────────────────────────────────── *
+   * CARDS                                                                *
+   * v7.19: subtle depth shadow, rounded-lg. No glow ring.               *
+   * v7.20 had: rounded-xl, hover:shadow-gold-sm glow.                   *
+   * ──────────────────────────────────────────────────────────────────── */
+  .card {
+    @apply bg-ink-2 border border-border-default rounded-lg shadow-card;
+  }
+
+  .card-sm {
+    @apply bg-ink-2 border border-border-default rounded-md;
+  }
+
+  .card-hover {
+    @apply card transition-colors duration-150
+           hover:border-border-default/80 hover:bg-ink-2;
+    /* v7.19: colour shift only — no glow shadow on hover */
+  }
+
+  /* ──────────────────────────────────────────────────────────────────── *
+   * FORM PRIMITIVES                                                      *
+   * v7.19: solid ink-3 background, inset shadow, hard border.           *
+   * v7.20 had: transparent bg, no border, no shadow on .form-input.     *
+   * ──────────────────────────────────────────────────────────────────── */
+  .form-label {
+    @apply block text-[11px] font-semibold uppercase tracking-widest
+           text-text-secondary mb-1.5;
+  }
+
+  .form-input {
+    @apply w-full bg-ink-3 border border-border-default rounded-md
+           px-3 py-2.5 text-sm font-mono text-text-primary
+           placeholder:text-text-muted
+           transition-colors duration-150
+           shadow-input;
+    outline: none;
+  }
+  .form-input:focus {
+    border-color: #C9A84C;
+    box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.18), inset 0 1px 2px rgba(0,0,0,0.35);
+  }
+
+  /* ──────────────────────────────────────────────────────────────────── *
+   * BUTTONS                                                              *
+   * v7.19: rounded-md (not rounded-lg), no glow shadow on primary.      *
+   * v7.20 had: shadow-[0_0_24px_rgba(212,175,55,0.15)] on btn-primary.  *
+   * ──────────────────────────────────────────────────────────────────── */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-gold text-ink font-semibold rounded-md
+           px-5 py-2.5 text-sm tracking-wide
+           transition-colors duration-150
+           hover:bg-gold-dark active:scale-[0.99]
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    /* Intentionally no box-shadow glow — that was a v7.20 addition */
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-transparent text-gold font-semibold rounded-md
+           border border-gold/35 px-5 py-2.5 text-sm tracking-wide
+           transition-colors duration-150
+           hover:bg-gold/8 hover:border-gold/60 active:scale-[0.99]
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           bg-transparent text-text-secondary font-medium rounded-md
+           px-4 py-2 text-sm
+           transition-colors duration-150
+           hover:text-text-primary hover:bg-ink-3
+           disabled:opacity-50;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────── *
+   * TABS                                                                 *
+   * ──────────────────────────────────────────────────────────────────── */
+  .tab-item {
+    @apply px-4 py-1.5 text-xs font-semibold rounded transition-colors duration-150
+           text-text-secondary hover:text-text-primary hover:bg-ink-3
+           cursor-pointer select-none border border-transparent;
+  }
+  .tab-item-active {
+    @apply px-4 py-1.5 text-xs font-semibold rounded
+           bg-ink-3 text-gold border border-border-default
+           cursor-pointer select-none;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────── *
+   * TABLE                                                                *
+   * ──────────────────────────────────────────────────────────────────── */
+  .table-header-cell {
+    @apply px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest
+           text-text-secondary bg-ink-3/60 border-b border-border-default;
+  }
+  .table-row {
+    @apply border-b border-border-subtle/50 transition-colors duration-100
+           hover:bg-ink-3/35;
+  }
+  .table-cell {
+    @apply px-4 py-3.5 text-sm;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────── *
+   * SECTION LABELLING                                                    *
+   * ──────────────────────────────────────────────────────────────────── */
+  /* v7.19 used .section-eyebrow; v7.20 renamed to .section-title.
+     Both are defined here for compatibility. */
+  .section-eyebrow,
+  .section-title {
+    @apply text-[10px] font-bold uppercase tracking-[0.2em] text-gold/65;
+  }
+
+  .section-heading {
+    @apply text-2xl sm:text-3xl font-bold text-text-primary leading-tight;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────── *
+   * BADGES / STAT PILLS                                                  *
+   * ──────────────────────────────────────────────────────────────────── */
+  .stat-up   { @apply text-success font-mono text-sm font-semibold tabular-nums; }
+  .stat-down { @apply text-error   font-mono text-sm font-semibold tabular-nums; }
+
+  .badge-up {
+    @apply inline-flex items-center gap-1 rounded px-1.5 py-0.5
+           text-xs font-semibold font-mono tabular-nums
+           bg-success/10 text-success;
+  }
+  .badge-down {
+    @apply inline-flex items-center gap-1 rounded px-1.5 py-0.5
+           text-xs font-semibold font-mono tabular-nums
+           bg-error/10 text-error;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────── *
+   * DIVIDERS                                                             *
+   * ──────────────────────────────────────────────────────────────────── */
+  .divider { @apply h-px w-full bg-border-default; }
+  .divider-subtle { @apply h-px w-full bg-border-subtle; }
+}
+
+@layer utilities {
+  /* ── Text wrapping ────────────────────────────────────────────────── */
+  .text-balance { text-wrap: balance; }
+
+  /* ── Scrollbar hide ───────────────────────────────────────────────── */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+
+  /* ──────────────────────────────────────────────────────────────────── *
+   * HERO IMAGE OVERLAY — v7.21 addition                                 *
+   * Applied to the <section> wrapper in HeroSection.tsx and any other   *
+   * full-bleed hero that uses a background image.                        *
+   *                                                                      *
+   * Usage:                                                               *
+   *   <section className="hero-image-section">                          *
+   *     <img className="hero-image-layer" src="..." />                  *
+   *     <div className="hero-image-overlay" />                          *
+   *     <div className="relative z-10"> ...content... </div>            *
+   *   </section>                                                         *
+   * ──────────────────────────────────────────────────────────────────── */
+  .hero-image-section {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* The Next.js <Image fill> or <img> element itself */
+  .hero-image-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    /* Sit behind overlays */
+    z-index: 0;
+  }
+
+  /* Gradient overlay that preserves the v7.19 ink palette on top of
+     the background image. Two layers: vertical fade + horizontal vignette. */
+  .hero-image-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    /* Vertical: near-opaque at top and bottom, lighter in middle */
+    background:
+      linear-gradient(
+        to bottom,
+        rgba(10, 13, 20, 0.82) 0%,
+        rgba(10, 13, 20, 0.55) 40%,
+        rgba(10, 13, 20, 0.65) 70%,
+        rgba(10, 13, 20, 0.92) 100%
+      ),
+      /* Horizontal vignette */
+      linear-gradient(
+        to right,
+        rgba(10, 13, 20, 0.45) 0%,
+        transparent 40%,
+        transparent 60%,
+        rgba(10, 13, 20, 0.45) 100%
+      );
+  }
+
+  /* Lighter variant for sections where the image is less prominent */
+  .hero-image-overlay-light {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      to bottom,
+      rgba(10, 13, 20, 0.72) 0%,
+      rgba(10, 13, 20, 0.45) 50%,
+      rgba(10, 13, 20, 0.85) 100%
+    );
+  }
+}
